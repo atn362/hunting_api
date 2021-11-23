@@ -31,6 +31,11 @@ const newspapers = [
     address: "https://www.foxnews.com/category/great-outdoors/hunting",
     base: "https://www.foxnews.com/",
   },
+  {
+    name: "nmwildlife",
+    address: "https://www.wildlife.state.nm.us/hunting/hunting-news/",
+    base: "",
+  },
 ];
 
 const articles = [];
@@ -64,8 +69,26 @@ app.get("/news/:newspaperId", async (req, res) => {
  const newspaperId = req.params.newspaperId
 
  const newspaperAddress = newspapers.filter(newspaper => newspaper.name == newspaperId)[0].address
-  console.log(newspaperAddress);
-  // axios.get()
-});
+ const newspaperBase = newspapers.filter(newspaper => newspaper.name == newspaperId)[0].base
 
-app.listen(PORT, () => console.log(`server running on PORT ${PORT}`));
+
+    axios.get(newspaperAddress)
+        .then(response => {
+            const html = response.data
+            const $ = cheerio.load(html)
+            const specificArticles = []
+
+            $('a:contains("hunt")', html).each(function () {
+                const title = $(this).text()
+                const url = $(this).attr('href')
+                specificArticles.push({
+                    title,
+                    url: newspaperBase + url,
+                    source: newspaperId
+                })
+            })
+            res.json(specificArticles)
+        }).catch(err => console.log(err))
+})
+
+app.listen(PORT, () => console.log(`server running on PORT ${PORT}`))
