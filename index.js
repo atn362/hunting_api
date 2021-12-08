@@ -1,4 +1,4 @@
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -36,6 +36,16 @@ const newspapers = [
     address: "https://www.wildlife.state.nm.us/hunting/hunting-news/",
     base: "",
   },
+  {
+    name: "gohunt",
+    address: "https://www.gohunt.com/category/news",
+    base: "https://www.gohunt.com",
+  },
+  {
+    name: "meateater",
+    address: "https://www.themeateater.com/",
+    base: "https://www.themeateater.com",
+  },
 ];
 
 const articles = [];
@@ -65,7 +75,7 @@ app.get("/news", (req, res) => {
   res.json(articles);
 });
 
-app.get("/news/:newspaperId", async (req, res) => {
+app.get("/news/:newspaperId", (req, res) => {
  const newspaperId = req.params.newspaperId
 
  const newspaperAddress = newspapers.filter(newspaper => newspaper.name == newspaperId)[0].address
