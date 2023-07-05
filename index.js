@@ -51,6 +51,11 @@ const newspapers = [
     address: "https://www.fieldandstream.com/",
     base: "",
   },
+  {
+    name: "wisconsin",
+    address: "https://dnr.wisconsin.gov",
+    base: "https://dnr.wisconsin.gov",
+  },
 ];
 
 const articles = [];
